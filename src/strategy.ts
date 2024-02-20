@@ -140,10 +140,17 @@ export class Strategy extends OAuth2Strategy {
       tokenURL,
     };
   }
+  authorizationParams() {
+    return {
+      code_challenge: 'challenge',
+      code_challenge_method: 'plain',
+    };
+  }
 
   tokenParams() {
     return {
       code_challenge: 'challenge',
+      code_challenge_method: 'plain',
     };
   }
 
