@@ -98,15 +98,21 @@ export class Strategy extends OAuth2Strategy {
       options.tokenURL || 'https://api.twitter.com/2/oauth2/token';
 
     // Twitter requires clients to use PKCE (RFC 7636)
-    options.pkce = true;
+    // options.pkce = true;
 
     // PKCE with Passport requires to enable sessions
-    options.state = true;
+    // options.state = true;
 
-    if (
-      options.clientType === 'confidential' ||
-      options.clientType === 'private'
-    ) {
+    options.store = {
+      verify: (req, state, cb) => {
+        cb(null, 'challenge');
+      },
+      store: (req, cb) => {
+        cb(null, true);
+      },
+    };
+
+    if (options.clientType === 'confidential') {
       // Private client type is deprecated
       // Twitter requires that OAuth2 client credentials are passed in Authorization header for confidential client types.
       // This is workaround as passport-oauth2 and node-oauth libs doesn't support it.
@@ -129,6 +135,12 @@ export class Strategy extends OAuth2Strategy {
       ...options,
       authorizationURL,
       tokenURL,
+    };
+  }
+
+  tokenParams() {
+    return {
+      code_challenge: 'challenge',
     };
   }
 
