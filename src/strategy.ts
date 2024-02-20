@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   Strategy as OAuth2Strategy,
   VerifyFunction,
@@ -105,9 +106,11 @@ export class Strategy extends OAuth2Strategy {
 
     options.store = {
       verify: (req, state, cb) => {
+        // @ts-expect-error
         cb(null, 'challenge');
       },
       store: (req, cb) => {
+        // @ts-expect-error
         cb(null, true);
       },
     };
