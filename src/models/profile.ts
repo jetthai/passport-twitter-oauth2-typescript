@@ -1,11 +1,24 @@
-import type { Profile as PassportProfile } from 'passport';
-
+/* eslint-disable prettier/prettier */
 /**
  * @public
  */
-export interface Profile extends PassportProfile {
+export interface Profile {
   username: string;
   profileUrl: string;
+  // custom profile properties
+  name: string | undefined;
+  picture?: string | undefined;
+  // default
+  provider: string;
+  id: string;
+  displayName: string;
+  emails?: Array<{
+    value: string;
+    type?: string | undefined;
+  }> | undefined;
+  photos?: Array<{
+    value: string;
+  }> | undefined;
 }
 
 /**

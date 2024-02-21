@@ -19,6 +19,9 @@ export const mapUserProfile = (json: string | TwitterUserInfo): Profile => {
     displayName: parsedJson.name,
     profileUrl: parsedJson.url,
     photos,
+    // custom profile properties
+    name: parsedJson.name,
+    picture: parsedJson.profile_image_url,
   };
 
   return profile;
