@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/jetthai/passport-twitter-oauth2-typescript/compare/v2.2.0...v2.2.1) (2025-03-06)
+
+
+### Bug Fixes
+
+* update default authorization URL ([#57](https://github.com/jetthai/passport-twitter-oauth2-typescript/issues/57)) ([ef14afc](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/ef14afc468460dcd2b3810cc02c668c72841c03a))
+
 ## 2.2.0 (2025-03-06)
 
 
