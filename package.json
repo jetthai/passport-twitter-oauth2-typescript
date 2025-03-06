@@ -1,10 +1,10 @@
 {
-  "name": "@jetthai/passport-twitter-oauth2",
+  "name": "@jetthai/passport-twitter-oauth2-typescript",
   "version": "1.2.7",
   "description": "Twitter OAuth 2.0 authentication strategy for Passport.",
   "source": "src/index.ts",
   "main": "./dist/index.js",
-  "repository": "git@github.com:jetthai/passport-twitter-oauth2.git",
+  "repository": "git@github.com:jetthai/passport-twitter-oauth2-typescript.git",
   "author": "Superface Team",
   "license": "MIT",
   "private": false,
