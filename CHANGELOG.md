@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.2.0 (2025-03-06)
+
+
+### Features
+
+* **esm:** Add ESM wrapper ([2f1ec3f](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/2f1ec3f966d266ba854bc55d1ab918b926b350a8))
+* add Twitter OAuth 2.0 strategy and profile ([edc39a5](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/edc39a545095267af0cdcbe595b02fe4a8574373))
+* merge strategy constructor scopes with authentication function scope option ([dec8382](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/dec8382d161142ff235394773f65a2e0765f3ce9))
+* module exports strategy costructor as both named and default export ([9a7f658](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/9a7f658df901b47c1439f2a93c8caf59598fbeb2))
+* parse user profile  photos and profileUrl ([8141b14](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/8141b14e83142ff521d735d04c608a6eea29eb6a))
+* rewrite the project in TypeScript ([8a84a28](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/8a84a284cfd9cb47dcdad0fbe0165decdc19fd36))
+* update default module exports ([2522f24](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/2522f247981c5347068112bcec593b978afb4dba))
+
+
+### Bug Fixes
+
+* add fake pcke parameters ([fab5ca0](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/fab5ca0ba0955c4eed965cec9ea0ba04e7b9bd72))
+* add profile parameters ([e1abdab](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/e1abdab1dde07f5258721fcefc23eb7bb2317cad))
+* disable eslint ([df6c6d2](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/df6c6d2ee00fad57548d8c018d27894979ee8cd5))
+* jump out pcke ([7f0b2d1](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/7f0b2d1759e87c873246ea789972d5ab4a662be1))
+* type-safe support for verify function with request ([#44](https://github.com/jetthai/passport-twitter-oauth2-typescript/issues/44)) ([ba5cf60](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/ba5cf602c3fc8e00a46df96c6f13a4152ac95d78))
+* update repo name ([6bbd708](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/6bbd70838893f544f96698c86d6d1639b7709d6b))
+* **ci:** Update npm conditionally ([8f2a7d9](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/8f2a7d9f16696875bd0a757fda851e9532ad81b7))
+* **ci:** Update npm to v9 ([7c15df3](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/7c15df3e0437d67b8ad15901ac53a59eb1e08762))
+* **CI:** Set registry-url in release workflow ([199ecf0](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/199ecf0f91f22ad15ba79d6669c73124269973ed))
+* **esm:** Drop ESM wrapper for now ([02a78eb](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/02a78ebba07cdb8d8990a96eea4546621dbae912))
+* **example:** Import dotenv/config, sort ([7aa5b9c](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/7aa5b9c6cc056ea210a419e0c06987c14891384b))
+* **lint:** Disable import/no-unresolved in TS test ([ef1965d](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/ef1965d8ff038b7e18bbb8c4dc614ebacb6844f0))
+* **types:** Optional deps @types/passport{-oauth2} ([cdc3290](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/cdc32905f77118de6085fc654f1e52779de19199))
+* backinng the old changelog ([a09d565](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/a09d5652436cf62b3c6c80b38138edcb588b7f38))
+* make authorizationURL and tokenURL strategy options optional ([c363a6c](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/c363a6cde7247a0ef09bbffcb1b47a013bbb5724))
+* option name userProfileUrl to userProfileURL ([79645b2](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/79645b25cd2408bd91620d8f5de6da52cbec2bdd))
+* remove duplicite type definition ([60dfe2b](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/60dfe2b95457ae0899a2efba9ef9d830dbff7385))
+* reverting the scopes behavior ([5eb2572](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/5eb257279d2f9fb935dc653e4fcc5df17ed5586f))
+* TypeScript support ([#26](https://github.com/jetthai/passport-twitter-oauth2-typescript/issues/26)) ([e417a0b](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/e417a0bafa0e5553d4c3a340ca9acb970d6b07cf))
+* user profile loading ([42df7a4](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/42df7a4151f0dcbcc4c359f99c3c9e20de03511f))
+* Verify's callback receives just Express.User ([f6ebbf4](https://github.com/jetthai/passport-twitter-oauth2-typescript/commit/f6ebbf4ebbf8240e5714357b0af6bfc0e955b099))
+
 ## 2.1.0 (2025-03-06)
 
 
