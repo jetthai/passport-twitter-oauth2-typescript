@@ -1,12 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Request } from 'express';
 import {
+  Metadata,
+  StateStoreStoreCallback,
+  StateStoreVerifyCallback,
   Strategy as OAuth2Strategy,
   VerifyFunction,
   VerifyFunctionWithRequest,
 } from 'passport-oauth2';
 
 import { mapUserProfile } from './mapUserProfile';
-import { ProfileWithMetaData } from './models/profile';
+import { ProfileWithMetaData } from './models';
 import {
   isStrategyOptions,
   isStrategyOptionsWithRequest,
@@ -91,7 +94,9 @@ export class Strategy extends OAuth2Strategy {
   static buildStrategyOptions(
     userOptions: StrategyOptions | StrategyOptionsWithRequest
   ) {
-    const options = userOptions || {};
+    const options = (userOptions || {}) as
+      | StrategyOptions
+      | StrategyOptionsWithRequest;
     options.sessionKey = options.sessionKey || 'oauth:twitter';
     const authorizationURL =
       options.authorizationURL || 'https://twitter.com/i/oauth2/authorize';
@@ -105,12 +110,36 @@ export class Strategy extends OAuth2Strategy {
     // options.state = true;
 
     options.store = {
-      verify: (req, state, cb) => {
-        // @ts-expect-error
-        cb(null, 'challenge');
+      verify: (
+        req: Request,
+        state: string,
+        metaOrCb: Metadata | StateStoreVerifyCallback,
+        maybeCb?: StateStoreVerifyCallback
+      ): void => {
+        let cb: StateStoreVerifyCallback;
+        let meta: Metadata | undefined;
+
+        if (typeof metaOrCb === 'function') {
+          cb = metaOrCb;
+        } else {
+          meta = metaOrCb;
+          cb = maybeCb;
+        }
+
+        cb(null, true, meta);
       },
-      store: (req, cb) => {
-        // @ts-expect-error
+      store: (
+        req: Request,
+        metaOrCb: Metadata | StateStoreStoreCallback,
+        maybeCb?: StateStoreStoreCallback
+      ): void => {
+        let cb: StateStoreStoreCallback;
+        if (typeof metaOrCb === 'function') {
+          cb = metaOrCb;
+        } else {
+          cb = maybeCb;
+        }
+
         cb(null, true);
       },
     };
@@ -130,8 +159,6 @@ export class Strategy extends OAuth2Strategy {
         },
         ...(options.customHeaders || {}),
       };
-    } else {
-      options.customHeaders || {};
     }
 
     return {
@@ -180,6 +207,7 @@ export class Strategy extends OAuth2Strategy {
         if (err.data && typeof err.data === 'string') {
           try {
             twitterError = JSON.parse(err.data) as unknown as TwitterError;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (_) {
             return done(
               new OAuth2Strategy.InternalOAuthError(
@@ -215,6 +243,7 @@ export class Strategy extends OAuth2Strategy {
         twitterUserInfoResponse = JSON.parse(
           body
         ) as unknown as TwitterUserInfoResponse;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (ex) {
         return done(new Error('Failed to parse user profile'));
       }
@@ -242,7 +271,7 @@ export class Strategy extends OAuth2Strategy {
       typeof skipUserProfileOption === 'function' &&
       skipUserProfileOption.length === 1
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
       skipUserProfile = skipUserProfileOption();
     }
 

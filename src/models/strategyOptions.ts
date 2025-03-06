@@ -50,6 +50,7 @@ export const isStrategyOptionsWithRequest = (
  */
 export interface AuthenticateOptions {
   scope?: string[] | string | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   state?: unknown | undefined;
   callbackURL?: string | undefined;
   failureRedirect?: string | undefined;
