@@ -47,7 +47,7 @@ export default [{
         sourceType: "commonjs",
 
         parserOptions: {
-            tsconfigRootDir: "/Users/user/Desktop/project/passport-twitter-oauth2-typescript",
+            tsconfigRootDir: __dirname,
             project: ["./tsconfig.json"],
             createDefaultProgram: true,
         },
