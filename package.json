@@ -21,7 +21,7 @@
     "format:fix": "prettier --write ./{src/**/*,test/**/*}",
     "prebuild": "npm run clean",
     "prepare": "npm run build",
-    "release": "npm run prebuild && npm run build && standard-version && git push --follow-tags origin master && npm publish"
+    "release": "npm run prebuild && npm run build && standard-version && git push --follow-tags origin main && npm publish"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
