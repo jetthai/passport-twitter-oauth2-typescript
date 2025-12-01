@@ -104,10 +104,10 @@ export class Strategy extends OAuth2Strategy {
       options.tokenURL || 'https://api.twitter.com/2/oauth2/token';
 
     // Twitter requires clients to use PKCE (RFC 7636)
-    // options.pkce = true;
+    options.pkce = true;
 
     // PKCE with Passport requires to enable sessions
-    // options.state = true;
+    options.state = true;
 
     options.store = {
       verify: (
@@ -165,19 +165,6 @@ export class Strategy extends OAuth2Strategy {
       ...options,
       authorizationURL,
       tokenURL,
-    };
-  }
-  authorizationParams() {
-    return {
-      code_challenge: 'challenge',
-      code_challenge_method: 'plain',
-    };
-  }
-
-  tokenParams() {
-    return {
-      code_challenge: 'challenge',
-      code_challenge_method: 'plain',
     };
   }
 
