@@ -1,8 +1,5 @@
 import { Request } from 'express';
 import {
-  Metadata,
-  StateStoreStoreCallback,
-  StateStoreVerifyCallback,
   Strategy as OAuth2Strategy,
   VerifyFunction,
   VerifyFunctionWithRequest,
@@ -108,41 +105,6 @@ export class Strategy extends OAuth2Strategy {
 
     // PKCE with Passport requires to enable sessions
     options.state = true;
-
-    options.store = {
-      verify: (
-        req: Request,
-        state: string,
-        metaOrCb: Metadata | StateStoreVerifyCallback,
-        maybeCb?: StateStoreVerifyCallback
-      ): void => {
-        let cb: StateStoreVerifyCallback;
-        let meta: Metadata | undefined;
-
-        if (typeof metaOrCb === 'function') {
-          cb = metaOrCb;
-        } else {
-          meta = metaOrCb;
-          cb = maybeCb;
-        }
-
-        cb(null, true, meta);
-      },
-      store: (
-        req: Request,
-        metaOrCb: Metadata | StateStoreStoreCallback,
-        maybeCb?: StateStoreStoreCallback
-      ): void => {
-        let cb: StateStoreStoreCallback;
-        if (typeof metaOrCb === 'function') {
-          cb = metaOrCb;
-        } else {
-          cb = maybeCb;
-        }
-
-        cb(null, true);
-      },
-    };
 
     if (options.clientType === 'confidential') {
       // Private client type is deprecated
