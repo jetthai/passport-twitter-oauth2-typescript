@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import {
   Strategy as OAuth2Strategy,
   VerifyFunction,
@@ -145,14 +144,14 @@ export class Strategy extends OAuth2Strategy {
    */
   userProfile(
     accessToken: string,
-    done: (error: Error | null, user?: ProfileWithMetaData) => void
+    done: (error: Error, user?: ProfileWithMetaData) => void
   ) {
     const url = new URL(this._userProfileURL);
 
     this._oauth2.useAuthorizationHeaderforGET(true);
     this._oauth2.get(url.toString(), accessToken, function (err, body, _res) {
       if (err) {
-        let twitterError: TwitterError | undefined = undefined;
+        let twitterError: TwitterError = undefined;
         if (err.data && typeof err.data === 'string') {
           try {
             twitterError = JSON.parse(err.data) as unknown as TwitterError;
