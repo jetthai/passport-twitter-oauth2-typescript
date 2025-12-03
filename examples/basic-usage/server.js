@@ -29,10 +29,12 @@ passport.use(
 
 const app = express();
 
-app.use(passport.initialize());
+// Session middleware must be initialized BEFORE passport for PKCE to work
 app.use(
   session({ secret: 'keyboard cat', resave: false, saveUninitialized: true })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get(
   '/auth/twitter',

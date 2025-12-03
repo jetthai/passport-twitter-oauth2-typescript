@@ -1,5 +1,7 @@
 import {
   Strategy as OAuth2Strategy,
+  StrategyOptions as PassportOAuth2StrategyOptions,
+  StrategyOptionsWithRequest as PassportOAuth2StrategyOptionsWithRequest,
   VerifyFunction,
   VerifyFunctionWithRequest,
 } from 'passport-oauth2';
@@ -67,10 +69,18 @@ export class Strategy extends OAuth2Strategy {
   ) {
     const options = Strategy.buildStrategyOptions(userOptions);
 
+    // Cast to passport-oauth2 types to allow custom PKCEStore
+    // The actual runtime behavior is compatible with passport-oauth2's expectations
     if (isStrategyOptions(options)) {
-      super(options, verify as VerifyFunction);
+      super(
+        options as unknown as PassportOAuth2StrategyOptions,
+        verify as VerifyFunction
+      );
     } else if (isStrategyOptionsWithRequest(options)) {
-      super(options, verify as VerifyFunctionWithRequest);
+      super(
+        options as unknown as PassportOAuth2StrategyOptionsWithRequest,
+        verify as VerifyFunctionWithRequest
+      );
     } else {
       throw Error('Strategy options not supported.');
     }
@@ -102,7 +112,8 @@ export class Strategy extends OAuth2Strategy {
     // Twitter requires clients to use PKCE (RFC 7636)
     options.pkce = true;
 
-    // PKCE with Passport requires to enable sessions
+    // PKCE with Passport requires to enable sessions (or a custom store)
+    // If a custom store is provided, it will be used instead of session-based storage
     options.state = true;
 
     if (options.clientType === 'confidential') {

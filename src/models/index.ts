@@ -3,4 +3,5 @@ export type {
   StrategyOptions,
   StrategyOptionsWithRequest,
   AuthenticateOptions,
+  PKCEStore,
 } from './strategyOptions';

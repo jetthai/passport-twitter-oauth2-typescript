@@ -19,7 +19,7 @@ const compat = new FlatCompat({
 });
 
 export default [{
-    ignores: ["dist/*", "node_modules/*", "**/.eslintrc.js", "test/bootstrap/*"],
+    ignores: ["dist/*", "node_modules/*", "**/.eslintrc.js", "test/bootstrap/*", "test/**/*.js"],
 }, ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -95,6 +95,7 @@ export default [{
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
     },
 }, {
     files: ["**/*.cjs"],

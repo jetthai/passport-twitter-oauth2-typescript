@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 
-// eslint-disable-next-line import/no-unresolved
 import StrategyDefaultImport, { Strategy as StrategyNamedImport } from '..';
 
 describe('@superfaceai/passport-twitter-oauth2 package', function () {

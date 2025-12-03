@@ -8,6 +8,7 @@ export type {
   StrategyOptions,
   StrategyOptionsWithRequest,
   AuthenticateOptions,
+  PKCEStore,
 } from './models';
 export { Strategy };
 

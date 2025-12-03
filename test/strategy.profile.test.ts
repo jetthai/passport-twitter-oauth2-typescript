@@ -39,6 +39,7 @@ describe('TwitterOAuth2Strategy#userProfile', function () {
     before(function (done) {
       strategy.userProfile(
         'token',
+        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
         (err: Error | null, p?: ProfileWithMetaData) => {
           if (err) {
             return done(err);
