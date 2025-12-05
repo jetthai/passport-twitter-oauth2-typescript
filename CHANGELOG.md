@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.12](https://github.com/jetthai/passport-twitter-oauth2-typescript/compare/v2.2.11...v2.2.12) (2025-12-05)
+
 ### [2.2.11](https://github.com/jetthai/passport-twitter-oauth2-typescript/compare/v2.2.10...v2.2.11) (2025-12-05)
 
 ### [2.2.10](https://github.com/jetthai/passport-twitter-oauth2-typescript/compare/v2.2.9...v2.2.10) (2025-12-03)
