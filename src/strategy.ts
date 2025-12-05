@@ -22,6 +22,7 @@ import { TwitterUserInfoResponse } from './models/twitterUserInfo';
  */
 export class Strategy extends OAuth2Strategy {
   _userProfileURL: string;
+  _useRealPKCE: boolean;
 
   /**
    * Twitter strategy constructor
@@ -90,6 +91,9 @@ export class Strategy extends OAuth2Strategy {
       options.userProfileURL ||
       'https://api.twitter.com/2/users/me?user.fields=profile_image_url,url';
 
+    // Track if real PKCE is being used (custom store provided)
+    this._useRealPKCE = !!userOptions.store;
+
     let scope = options.scope || [];
     if (!Array.isArray(scope)) {
       scope = [scope];
@@ -110,10 +114,35 @@ export class Strategy extends OAuth2Strategy {
       options.tokenURL || 'https://api.twitter.com/2/oauth2/token';
 
     // Twitter requires clients to use PKCE (RFC 7636)
-    options.pkce = true;
+    // We use a simplified PKCE bypass with a fixed challenge/verifier
+    // If a custom store is provided, use real PKCE instead
+    /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+    if (!options.store) {
+      type StoreCb = (err: Error | null, state?: string) => void;
+      type VerifyCb = (
+        err: Error | null,
+        ok?: string | false,
+        state?: string
+      ) => void;
 
-    // PKCE with Passport requires to enable sessions (or a custom store)
-    // If a custom store is provided, it will be used instead of session-based storage
+      options.store = {
+        store: (
+          _req: unknown,
+          _verifier: string,
+          _state: unknown,
+          _meta: unknown,
+          cb: StoreCb
+        ) => {
+          cb(null, 'state');
+        },
+        verify: (_req: unknown, _state: string, cb: VerifyCb) => {
+          cb(null, 'challenge', 'state');
+        },
+      };
+    }
+    /* eslint-enable @typescript-eslint/no-redundant-type-constituents */
+
+    options.pkce = true;
     options.state = true;
 
     if (options.clientType === 'confidential') {
@@ -217,6 +246,39 @@ export class Strategy extends OAuth2Strategy {
 
       done(null, userProfileWithMetadata);
     });
+  }
+
+  /**
+   * Return extra parameters to be included in the authorization request.
+   * When using real PKCE (custom store), passport-oauth2 handles this automatically.
+   * When using fake PKCE (no custom store), returns a fixed code_challenge.
+   */
+  authorizationParams(): object {
+    if (this._useRealPKCE) {
+      // Let passport-oauth2 handle real PKCE
+      return {};
+    }
+    // Fake PKCE bypass with fixed challenge
+    return {
+      code_challenge: 'challenge',
+      code_challenge_method: 'plain',
+    };
+  }
+
+  /**
+   * Return extra parameters to be included in the token request.
+   * When using real PKCE (custom store), passport-oauth2 handles this automatically.
+   * When using fake PKCE (no custom store), returns a fixed code_verifier.
+   */
+  tokenParams(): object {
+    if (this._useRealPKCE) {
+      // Let passport-oauth2 handle real PKCE
+      return {};
+    }
+    // Fake PKCE bypass with fixed verifier
+    return {
+      code_verifier: 'challenge',
+    };
   }
 
   addDefaultScopes(
