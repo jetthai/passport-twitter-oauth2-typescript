@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PKCEStore } from '@superfaceai/passport-twitter-oauth2';
+import { PKCEStore } from '@jetthai/passport-twitter-oauth2';
 import { Request } from 'express';
 import { RedisService } from '../redis/redis.service';
 
@@ -12,7 +12,7 @@ import { RedisService } from '../redis/redis.service';
  * - 支援 CommonUtils.getChallengeCode(state) 格式的 key
  */
 @Injectable()
-export class TwitterPKCEStoreService implements PKCEStore {
+class TwitterPKCEStoreService implements PKCEStore {
   // TTL 設定為 10 分鐘（與一般 OAuth 流程超時一致）
   private readonly TTL_SECONDS = 600;
 
@@ -134,3 +134,5 @@ export class TwitterPKCEStoreService implements PKCEStore {
     }
   }
 }
+
+export default TwitterPKCEStoreService

@@ -1,3 +1,5 @@
+import base64url from 'base64url';
+import crypto from 'crypto';
 import {
   Strategy as OAuth2Strategy,
   StrategyOptions as PassportOAuth2StrategyOptions,
@@ -5,12 +7,15 @@ import {
   VerifyFunction,
   VerifyFunctionWithRequest,
 } from 'passport-oauth2';
+import url from 'url';
 
 import { mapUserProfile } from './mapUserProfile';
 import { ProfileWithMetaData } from './models';
 import {
+  AuthenticateOptions,
   isStrategyOptions,
   isStrategyOptionsWithRequest,
+  PKCEStore,
   StrategyOptions,
   StrategyOptionsWithRequest,
 } from './models/strategyOptions';
@@ -23,6 +28,10 @@ import { TwitterUserInfoResponse } from './models/twitterUserInfo';
 export class Strategy extends OAuth2Strategy {
   _userProfileURL: string;
   _useRealPKCE: boolean;
+  // These properties exist on passport-oauth2 Strategy but are not typed
+  declare _stateStore: PKCEStore;
+  declare _callbackURL: string;
+  declare _scope: string | string[];
 
   /**
    * Twitter strategy constructor
@@ -279,6 +288,96 @@ export class Strategy extends OAuth2Strategy {
     return {
       code_verifier: 'challenge',
     };
+  }
+
+  /**
+   * Authenticate request with custom PKCE handling.
+   *
+   * When using a custom PKCEStore with a string state, passport-oauth2 skips
+   * calling store.store() and doesn't save the PKCE verifier. This override
+   * ensures the store is always called when using real PKCE.
+   */
+  authenticate(
+    req: Parameters<OAuth2Strategy['authenticate']>[0],
+    options?: AuthenticateOptions
+  ): void {
+    // If not using real PKCE, or no string state provided, use default behavior
+    if (
+      !this._useRealPKCE ||
+      !options?.state ||
+      typeof options.state !== 'string'
+    ) {
+      return super.authenticate(req, options);
+    }
+
+    // Check if this is a callback (has code parameter)
+    const query = req.query as Record<string, unknown>;
+    const body = req.body as Record<string, unknown>;
+    const hasCode = query?.code || body?.code;
+    if (hasCode) {
+      // On callback, use default behavior - verify will be called
+      return super.authenticate(req, options);
+    }
+
+    // Authorization phase with string state and real PKCE
+    // We need to manually handle PKCE since passport-oauth2 skips store.store()
+    // when state is a string
+    const stateStore = this._stateStore;
+    const customState = options.state;
+
+    // Access protected _oauth2 properties via type assertion
+    const oauth2 = this._oauth2 as unknown as {
+      _authorizeUrl: string;
+      _accessTokenUrl: string;
+      _clientId: string;
+    };
+
+    // Generate PKCE verifier and challenge (S256 method)
+    const verifier = base64url(crypto.pseudoRandomBytes(32));
+    const challenge = base64url(
+      crypto.createHash('sha256').update(verifier).digest()
+    );
+
+    const meta = {
+      authorizationURL: oauth2._authorizeUrl,
+      tokenURL: oauth2._accessTokenUrl,
+      clientID: oauth2._clientId,
+    };
+
+    // Call the store to save the verifier
+    stateStore.store(req, verifier, customState, meta, (err, handle) => {
+      if (err) {
+        return this.error(err);
+      }
+
+      // Build authorization URL with PKCE parameters
+      const params = this.authorizationParams() as Record<string, string>;
+      params.response_type = 'code';
+      params.code_challenge = challenge;
+      params.code_challenge_method = 'S256';
+      params.state = handle || customState;
+
+      // Handle callback URL
+      const callbackURL = options.callbackURL || this._callbackURL;
+      if (callbackURL) {
+        params.redirect_uri = callbackURL;
+      }
+
+      // Handle scope
+      const scope = options.scope || this._scope;
+      if (scope) {
+        params.scope = Array.isArray(scope) ? scope.join(' ') : scope;
+      }
+
+      // Build the authorization URL
+      const parsed = url.parse(oauth2._authorizeUrl, true);
+      Object.assign(parsed.query, params);
+      parsed.query['client_id'] = oauth2._clientId;
+      delete parsed.search;
+      const location = url.format(parsed);
+
+      this.redirect(location);
+    });
   }
 
   addDefaultScopes(

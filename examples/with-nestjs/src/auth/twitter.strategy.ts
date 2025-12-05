@@ -5,9 +5,9 @@ import {
   Strategy,
   Profile,
   StrategyOptionsWithRequest,
-} from '@superfaceai/passport-twitter-oauth2';
+} from '@jetthai/passport-twitter-oauth2';
 import { Request } from 'express';
-import { TwitterPKCEStoreService } from './twitter-pkce-store.service';
+import TwitterPKCEStoreService from './twitter-pkce-store.service';
 
 /**
  * Twitter OAuth 2.0 Strategy with proper PKCE support
@@ -22,8 +22,8 @@ export class TwitterStrategy extends PassportStrategy(Strategy, 'twitter') {
     private readonly pkceStore: TwitterPKCEStoreService,
   ) {
     const options: StrategyOptionsWithRequest = {
-      clientID: configService.get<string>('TWITTER_CLIENT_ID'),
-      clientSecret: configService.get<string>('TWITTER_CLIENT_SECRET'),
+      clientID: configService.get<string>('TWITTER_CLIENT_ID') as string,
+      clientSecret: configService.get<string>('TWITTER_CLIENT_SECRET') as string,
       clientType: 'confidential',
       callbackURL: configService.get<string>('TWITTER_CALLBACK_URL'),
       passReqToCallback: true,
