@@ -331,6 +331,8 @@ export class Strategy extends OAuth2Strategy {
       _accessTokenUrl: string;
       _clientId: string;
     };
+    const res =
+      (req as unknown as { res?: { headersSent?: boolean } }).res || undefined;
     let responded = false;
 
     // Generate PKCE verifier and challenge (S256 method)
@@ -381,6 +383,11 @@ export class Strategy extends OAuth2Strategy {
       parsed.query['client_id'] = oauth2._clientId;
       delete parsed.search;
       const location = url.format(parsed);
+
+      // If headers were already sent by upstream middleware, don't attempt to redirect again.
+      if (res?.headersSent) {
+        return;
+      }
 
       this.redirect(location);
     });
