@@ -331,6 +331,13 @@ export class Strategy extends OAuth2Strategy {
       _accessTokenUrl: string;
       _clientId: string;
     };
+    const res =
+      (
+        req as unknown as {
+          res?: { headersSent?: boolean; writableEnded?: boolean };
+        }
+      ).res || undefined;
+    let responded = false;
 
     // Generate PKCE verifier and challenge (S256 method)
     const verifier = base64url(crypto.pseudoRandomBytes(32));
@@ -346,6 +353,11 @@ export class Strategy extends OAuth2Strategy {
 
     // Call the store to save the verifier
     stateStore.store(req, verifier, customState, meta, (err, handle) => {
+      if (responded) {
+        return;
+      }
+      responded = true;
+
       if (err) {
         return this.error(err);
       }
@@ -375,6 +387,11 @@ export class Strategy extends OAuth2Strategy {
       parsed.query['client_id'] = oauth2._clientId;
       delete parsed.search;
       const location = url.format(parsed);
+
+      // Avoid attempting to write headers if another handler already sent a response
+      if (res?.headersSent || res?.writableEnded) {
+        return;
+      }
 
       this.redirect(location);
     });
