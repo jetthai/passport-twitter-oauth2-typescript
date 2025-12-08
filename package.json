@@ -1,6 +1,6 @@
 {
   "name": "@jetthai/passport-twitter-oauth2-typescript",
-  "version": "2.2.14",
+  "version": "2.2.15",
   "description": "Twitter OAuth 2.0 authentication strategy for Passport.",
   "source": "src/index.ts",
   "main": "./dist/index.js",
