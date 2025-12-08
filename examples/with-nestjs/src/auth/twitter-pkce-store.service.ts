@@ -52,7 +52,11 @@ class TwitterPKCEStoreService implements PKCEStore {
     // 如果用戶使用 CommonUtils.getChallengeCode(state)，可以在這裡調整
     const redisKey = this.getRedisKey(customState);
 
-    this.storeToRedis(redisKey, verifier, customState, callback);
+    // Properly handle the async operation's Promise to catch any unhandled rejections
+    this.storeToRedis(redisKey, verifier, customState, callback).catch((err) => {
+      // If there's an unhandled error in the async operation, ensure callback is called
+      callback(err instanceof Error ? err : new Error(String(err)));
+    });
   }
 
   /**
@@ -72,7 +76,11 @@ class TwitterPKCEStoreService implements PKCEStore {
   ): void {
     const redisKey = this.getRedisKey(providedState);
 
-    this.retrieveFromRedis(redisKey, providedState, callback);
+    // Properly handle the async operation's Promise to catch any unhandled rejections
+    this.retrieveFromRedis(redisKey, providedState, callback).catch((err) => {
+      // If there's an unhandled error in the async operation, ensure callback is called
+      callback(err instanceof Error ? err : new Error(String(err)));
+    });
   }
 
   /**
@@ -90,6 +98,7 @@ class TwitterPKCEStoreService implements PKCEStore {
     state: string,
     callback: (err: Error | null, handle?: string) => void,
   ): Promise<void> {
+    let callbackCalled = false;
     try {
       // 檢查是否已有現有資料（可能是用戶先前存入的 payload）
       const existingData = await this.redisService.get(redisKey);
@@ -99,9 +108,12 @@ class TwitterPKCEStoreService implements PKCEStore {
       payload.code_verifier = verifier;
 
       await this.redisService.set(redisKey, JSON.stringify(payload), this.TTL_SECONDS);
+      callbackCalled = true;
       callback(null, state);
     } catch (err) {
-      callback(err instanceof Error ? err : new Error(String(err)));
+      if (!callbackCalled) {
+        callback(err instanceof Error ? err : new Error(String(err)));
+      }
     }
   }
 
@@ -110,10 +122,12 @@ class TwitterPKCEStoreService implements PKCEStore {
     state: string,
     callback: (err: Error | null, ok?: string | false, state?: string) => void,
   ): Promise<void> {
+    let callbackCalled = false;
     try {
       const data = await this.redisService.get(redisKey);
 
       if (!data) {
+        callbackCalled = true;
         return callback(null, false);
       }
 
@@ -121,6 +135,7 @@ class TwitterPKCEStoreService implements PKCEStore {
       const codeVerifier = payload.code_verifier;
 
       if (!codeVerifier) {
+        callbackCalled = true;
         return callback(null, false);
       }
 
@@ -128,9 +143,12 @@ class TwitterPKCEStoreService implements PKCEStore {
       // 如果需要自動清理，可以取消下面這行的註解
       // await this.redisService.del(redisKey);
 
+      callbackCalled = true;
       callback(null, codeVerifier, state);
     } catch (err) {
-      callback(err instanceof Error ? err : new Error(String(err)));
+      if (!callbackCalled) {
+        callback(err instanceof Error ? err : new Error(String(err)));
+      }
     }
   }
 }
