@@ -1,5 +1,4 @@
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import jest from "eslint-plugin-jest";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import prettier from "eslint-plugin-prettier";
 import tsdoc from "eslint-plugin-tsdoc";
@@ -31,7 +30,6 @@ export default [{
 ), {
     plugins: {
         "@typescript-eslint": typescriptEslint,
-        jest,
         "simple-import-sort": simpleImportSort,
         prettier,
         tsdoc,
